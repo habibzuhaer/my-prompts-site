@@ -1,0 +1,19 @@
+Часть 2: Запуск бэкенда
+1. Установите и запустите Redis и PostgreSQL
+bash
+# Using Docker
+docker run --name alertbot-redis -d -p 6379:6379 redis
+docker run --name alertbot-postgres -d -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=alertbot postgres
+2. Установите зависимости и запустите приложение
+bash
+cd backend
+pip install -r requirements.txt
+
+# Запуск FastAPI
+uvicorn app.main:app --reload
+
+# Запуск Celery worker (в отдельном терминале)
+celery -A app.celery_app worker --loglevel=info
+
+# Запуск Celery beat для периодических задач (в отдельном терминале)
+celery -A app.celery_app beat --loglevel=info
